@@ -3,19 +3,19 @@ repos:
     rev: 4.0.1
     hooks:
     -   id: flake8
-        files: audrey-hopburn
+        files: audrey_hopburn
 - repo: https://github.com/ambv/black
   rev: 22.3.0
   hooks:
   - id: black
     types: [python]
-    files: audrey-hopburn|tests
+    files: audrey_hopburn|tests
 # DOCSTRINGS: re-enable docstring linting when ready/wanted
 #- repo: https://github.com/terrencepreilly/darglint
 #  rev: v1.8.1
 #  hooks:
 #  - id: darglint
-#    files: audrey-hopburn
+#    files: audrey_hopburn
 #    args:
 #    - --message-template={path}:{line} {msg_id} {msg}
 #    - -s=sphinx
@@ -25,7 +25,7 @@ repos:
 #  rev: 6.1.1
 #  hooks:
 #  -   id: pydocstyle
-#      files: audrey-hopburn
+#      files: audrey_hopburn
 #      args:
 #      - --select=D101,D102,D103
 # disabled due to issues with precommit
@@ -34,6 +34,6 @@ repos:
 #  rev: 'v0.982'
 #  hooks:
 #  -   id: mypy
-#      files: audrey-hopburn|main.py
+#      files: audrey_hopburn|main.py
 #      exclude: ^tests/
 #      additional_dependencies: [types-setuptools]
