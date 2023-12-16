@@ -1,0 +1,17 @@
+# .coveragerc to control coverage.py
+[run]
+branch = False
+source = audrey-hopburn
+
+[report]
+# Regexes for lines to exclude from consideration
+exclude_lines =
+    # Have to re-enable the standard pragma
+    pragma: no cover
+
+
+[html]
+directory = ./reports/coverage/
+
+[xml]
+output = ./reports/coverage/coverage.xml

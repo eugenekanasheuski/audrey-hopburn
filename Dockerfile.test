@@ -1,0 +1,31 @@
+FROM python:3.8-slim-buster
+
+LABEL maintainer=evgen.kanashevsky@gmail.com
+
+RUN apt-get update && apt-get upgrade -y && apt-get install -y git curl && apt-get clean -y
+
+RUN mkdir -p /opt/audrey-hopburn
+WORKDIR /opt/audrey-hopburn
+
+RUN pip install --upgrade pip
+RUN pip install --upgrade setuptools
+RUN pip install pip-tools
+
+# Install and cache dependencies
+COPY setup.cfg /opt/audrey-hopburn/
+COPY setup.py /opt/audrey-hopburn/
+COPY mypy.ini /opt/audrey-hopburn/
+COPY audrey-hopburn/__init__.py /opt/audrey-hopburn/audrey-hopburn/__init__.py
+RUN pip-compile --extra test -o requirements-test.txt
+RUN pip install -r requirements-test.txt
+
+ENV PYTHONHASHSEED=0
+
+# Install package
+COPY . /opt/audrey-hopburn
+RUN pip install ".[test]"
+
+CMD flake8 audrey-hopburn/ && \
+    black --check ./audrey-hopburn ./tests  --exclude '\./tests/data/' && \
+    mypy --config-file=mypy.ini ./audrey-hopburn && \
+    pytest -sv -o log_cli=true -o log_cli_level="INFO"

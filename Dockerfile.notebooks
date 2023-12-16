@@ -1,0 +1,44 @@
+FROM python:3.8
+
+LABEL maintainer=evgen.kanashevsky@gmail.com
+
+RUN apt-get update && apt-get upgrade -y && apt-get install -y git curl && apt-get clean -y
+RUN apt-get install -y gcc
+
+RUN mkdir -p /opt/audrey-hopburn
+WORKDIR /opt/audrey-hopburn
+
+RUN pip install --upgrade pip
+RUN pip install --upgrade setuptools
+RUN pip install pip-tools
+RUN pip install jupyter ipython
+
+# Add Tini. Tini operates as a process subreaper for jupyter. This prevents kernel crashes.
+ENV TINI_VERSION v0.6.0
+ENV PYTHONHASHSEED=0
+ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /usr/bin/tini
+RUN chmod +x /usr/bin/tini
+ENTRYPOINT ["/usr/bin/tini", "--"]
+
+# Mainly to ensure autoreload
+COPY ipython_config.py /root/.ipython/profile_default/ipython_config.py
+
+CMD ["jupyter", "notebook", "--port=8989", "--no-browser", "--ip=0.0.0.0", "--allow-root"]
+
+# Install and cache dependencies
+COPY setup.cfg  /opt/audrey-hopburn/
+COPY setup.py  /opt/audrey-hopburn/
+COPY audrey-hopburn/__init__.py /opt/audrey-hopburn/audrey-hopburn/__init__.py
+
+RUN pip-compile --extra notebooks -o requirements-notebooks.txt
+RUN pip install -r requirements-notebooks.txt
+#
+#COPY . /opt/audrey-hopburn
+#RUN pip install -e ".[notebooks]" --use-deprecated=legacy-resolver
+#
+#ENV GOOGLE_APPLICATION_CREDENTIALS="/opt/audrey-hopburn/sa.json"
+#
+#RUN echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] http://packages.cloud.google.com/apt cloud-sdk main" | tee -a /etc/apt/sources.list.d/google-cloud-sdk.list && curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key --keyring /usr/share/keyrings/cloud.google.gpg  add - && apt-get update -y && apt-get install google-cloud-sdk -y
+#
+#RUN gcloud auth activate-service-account --key-file /opt/audrey-hopburn/sa.json
+#RUN gcloud config set project original-list-207312

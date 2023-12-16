@@ -1,0 +1,79 @@
+name: Checks
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - develop
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout repo
+        uses: actions/checkout@v3
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.8
+      - name: Install dependencies
+        run: make install-test
+      - name: Run checks
+        run: bash .github/checks.sh
+      - name: Upload badges
+        # Upload the coverage result as an artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: badges
+          path: |
+            coverage-badge.svg
+            tests-badge.svg
+            flake8-badge.svg
+        # Use always() to always run this step to publish test results when there are test failures
+        if: ${{ always() }}
+
+  gating:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Download badges
+        uses: actions/download-artifact@v2
+        with:
+          name: badges
+      - name: Set suffix
+        run: |
+          echo "Repo Name ${{ github.event.repository.name }}"
+          echo "Event type ${{github.event_name}}"
+          if ${{ github.event_name == 'pull_request'}}; then
+            echo "suffix=PR-${{ github.event.number }}" >> $GITHUB_ENV
+            echo "suffix set to PR-${{ github.event.number }}"
+          else
+            echo "suffix=BRANCH-${GITHUB_REF_NAME}" >> $GITHUB_ENV
+            echo "suffix set to BRANCH-${GITHUB_REF_NAME}"
+          fi
+      - name: Deploy coverage badge
+        uses: exuanbo/actions-deploy-gist@v1
+        with:
+          token: ${{ secrets.GIST_SECRET }}
+          gist_id: b072974df4b70a726acc4756f1e9662f
+          gist_description: "badges"
+          gist_file_name: ${{ github.event.repository.name }}-coverage-badge-${{ env.suffix }}.svg
+          file_path: coverage-badge.svg
+      - name: Deploy tests badge
+        uses: exuanbo/actions-deploy-gist@v1
+        with:
+          token: ${{ secrets.GIST_SECRET }}
+          gist_id: b072974df4b70a726acc4756f1e9662f
+          gist_description: "badges"
+          gist_file_name: ${{ github.event.repository.name }}-tests-badge-${{ env.suffix }}.svg
+          file_path: tests-badge.svg
+      - name: Deploy flake8 badge
+        uses: exuanbo/actions-deploy-gist@v1
+        with:
+          token: ${{ secrets.GIST_SECRET }}
+          gist_id: b072974df4b70a726acc4756f1e9662f
+          gist_description: "badges"
+          gist_file_name: ${{ github.event.repository.name }}-flake8-badge-${{ env.suffix }}.svg
+          file_path: flake8-badge.svg

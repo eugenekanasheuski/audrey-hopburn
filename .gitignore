@@ -1,0 +1,25 @@
+.pytest_cache
+**/__pycache__/**
+.DS_Store
+.ipynb_checkpoints
+
+reports/
+*-badge.svg
+.coverage
+
+.venv/
+dist/
+__pycache__/
+build/
+venv/
+
+.vscode/
+.idea/
+*.egg-info/
+
+*.pyc
+
+# visual studio code
+.vscode
+
+audrey-hopburn.egg-info

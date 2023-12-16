@@ -1,0 +1,39 @@
+repos:
+-   repo: https://github.com/pycqa/flake8
+    rev: 4.0.1
+    hooks:
+    -   id: flake8
+        files: audrey-hopburn
+- repo: https://github.com/ambv/black
+  rev: 22.3.0
+  hooks:
+  - id: black
+    types: [python]
+    files: audrey-hopburn|tests
+# DOCSTRINGS: re-enable docstring linting when ready/wanted
+#- repo: https://github.com/terrencepreilly/darglint
+#  rev: v1.8.1
+#  hooks:
+#  - id: darglint
+#    files: audrey-hopburn
+#    args:
+#    - --message-template={path}:{line} {msg_id} {msg}
+#    - -s=sphinx
+#    - -z=full
+#    - -v=2
+#- repo: https://github.com/pycqa/pydocstyle
+#  rev: 6.1.1
+#  hooks:
+#  -   id: pydocstyle
+#      files: audrey-hopburn
+#      args:
+#      - --select=D101,D102,D103
+# disabled due to issues with precommit
+# and mypy. the check is run during CI
+#- repo: https://github.com/pre-commit/mirrors-mypy
+#  rev: 'v0.982'
+#  hooks:
+#  -   id: mypy
+#      files: audrey-hopburn|main.py
+#      exclude: ^tests/
+#      additional_dependencies: [types-setuptools]
