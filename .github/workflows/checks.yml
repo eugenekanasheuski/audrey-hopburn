@@ -57,7 +57,7 @@ jobs:
         uses: exuanbo/actions-deploy-gist@v1
         with:
           token: ${{ secrets.GIST_SECRET }}
-          gist_id: b072974df4b70a726acc4756f1e9662f
+          gist_id: 8a9b3ce67267ea413b690babf967da61
           gist_description: "badges"
           gist_file_name: ${{ github.event.repository.name }}-coverage-badge-${{ env.suffix }}.svg
           file_path: coverage-badge.svg
@@ -65,7 +65,7 @@ jobs:
         uses: exuanbo/actions-deploy-gist@v1
         with:
           token: ${{ secrets.GIST_SECRET }}
-          gist_id: b072974df4b70a726acc4756f1e9662f
+          gist_id: 8a9b3ce67267ea413b690babf967da61
           gist_description: "badges"
           gist_file_name: ${{ github.event.repository.name }}-tests-badge-${{ env.suffix }}.svg
           file_path: tests-badge.svg
@@ -73,7 +73,7 @@ jobs:
         uses: exuanbo/actions-deploy-gist@v1
         with:
           token: ${{ secrets.GIST_SECRET }}
-          gist_id: b072974df4b70a726acc4756f1e9662f
+          gist_id: 8a9b3ce67267ea413b690babf967da61
           gist_description: "badges"
           gist_file_name: ${{ github.event.repository.name }}-flake8-badge-${{ env.suffix }}.svg
           file_path: flake8-badge.svg
